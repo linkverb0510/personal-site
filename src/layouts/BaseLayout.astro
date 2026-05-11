@@ -1,0 +1,35 @@
+---
+import SeoHead from '../components/SeoHead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { siteConfig } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  pageType?: 'website' | 'article';
+}
+
+const { title, description, image, pageType } = Astro.props;
+---
+
+<!doctype html>
+<html lang={siteConfig.locale}>
+  <head>
+    <SeoHead title={title} description={description} image={image} type={pageType} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <div class="page-shell">
+      <SiteHeader />
+      <main id="main-content" class="container">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+  </body>
+</html>

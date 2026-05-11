@@ -1,0 +1,66 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate } from '../../utils/format';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const projectStatusLabel = {
+  planned: '计划中',
+  building: '进行中',
+  completed: '已完成',
+}[project.data.status];
+---
+
+<BaseLayout title={project.data.title} description={project.data.summary} pageType="article">
+  <article>
+    <section class="detail-hero detail-hero--project">
+      <p class="detail-hero__eyebrow">Case Study</p>
+      <h1 class="detail-hero__title">{project.data.title}</h1>
+      <p class="detail-hero__summary">{project.data.summary}</p>
+
+      <div class="detail-meta" aria-label="项目元信息">
+        <span class="status-pill">{formatDate(project.data.date)}</span>
+        <span class="status-pill">{projectStatusLabel}</span>
+        {project.data.period && <span class="status-pill">{project.data.period}</span>}
+        {project.data.techStack.map((item) => <span class="status-pill">{item}</span>)}
+      </div>
+
+      <div class="hero__actions">
+        {project.data.repoUrl && <a class="button button--primary" href={project.data.repoUrl}>查看仓库</a>}
+        {project.data.demoUrl && <a class="button button--secondary" href={project.data.demoUrl}>在线演示</a>}
+      </div>
+    </section>
+
+    <section class="project-facts">
+      <article class="project-facts__panel">
+        <p class="hero__eyebrow">My Role</p>
+        <h2>{project.data.role ?? '独立完成'}</h2>
+      </article>
+
+      <article class="project-facts__panel">
+        <p class="hero__eyebrow">Highlights</p>
+        <ul>
+          {project.data.highlights.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </section>
+
+    <section class="detail-body">
+      <Content />
+    </section>
+  </article>
+</BaseLayout>

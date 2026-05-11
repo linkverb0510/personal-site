@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from '../../components/ArticleCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { isProductionVisible, sortByDateDesc } from '../../utils/content';
+
+const posts = sortByDateDesc((await getCollection('blog')).filter((post) => isProductionVisible(post.data.draft)));
+const featuredPosts = posts.filter((post) => post.data.featured);
+---
+
+<BaseLayout title="博客" description="阅读我的学习笔记、项目复盘和前端工程实践。">
+  <section class="list-page-intro">
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">Blog Archive</p>
+        <h1 class="section-heading__title">博客</h1>
+        <p class="section-heading__text">
+          这里收集学习记录、项目拆解、前端实验和工程化思考。文章使用 Markdown 管理，方便持续输出。
+        </p>
+      </div>
+    </div>
+
+    {featuredPosts.length > 0 && (
+      <>
+        <div class="section-heading">
+          <div>
+            <p class="section-heading__eyebrow">Featured Posts</p>
+            <h2 class="section-heading__title">精选文章</h2>
+          </div>
+        </div>
+        <div class="card-grid">
+          {featuredPosts.map((post) => <ArticleCard post={post} />)}
+        </div>
+      </>
+    )}
+
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">All Posts</p>
+        <h2 class="section-heading__title">全部文章</h2>
+      </div>
+      <a class="section-link" href="/archive">查看归档</a>
+    </div>
+
+    <div class="card-grid">
+      {posts.map((post) => <ArticleCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

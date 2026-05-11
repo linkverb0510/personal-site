@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from '../components/ArticleCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { homeSections, siteConfig } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { isProductionVisible, sortByDateDesc } from '../utils/content';
+
+const allPosts = sortByDateDesc((await getCollection('blog')).filter((post) => isProductionVisible(post.data.draft)));
+const featuredPosts = allPosts.filter((post) => post.data.featured).slice(0, 2);
+const latestPosts = allPosts.slice(0, 3);
+const featuredProjects = sortByDateDesc((await getCollection('projects')).filter((project) => project.data.featured)).slice(
+  0,
+  2,
+);
+---
+
+<BaseLayout title="首页" description={homeSections.heroText}>
+  <section class="landing-hero">
+    <div class="landing-hero__copy">
+      <p class="hero__eyebrow">{homeSections.heroEyebrow}</p>
+      <h1 class="landing-hero__title">{homeSections.heroTitle}</h1>
+      <p class="landing-hero__text">{homeSections.heroText}</p>
+      <p class="landing-hero__caption">{homeSections.heroCaption}</p>
+
+      <div class="hero__actions">
+        <a class="button button--primary" href="/projects">查看项目</a>
+        <a class="button button--secondary" href="/blog">阅读博客</a>
+      </div>
+    </div>
+
+    <aside class="landing-hero__panel">
+      <p class="hero__eyebrow">Current Focus</p>
+      <ul class="plain-list plain-list--stack">
+        {homeSections.currentFocus.map((item) => <li class="status-pill status-pill--block">{item}</li>)}
+      </ul>
+
+      <div class="stats-grid stats-grid--compact" aria-label="网站特点">
+        {
+          homeSections.stats.map((stat) => (
+            <div class="stat-tile">
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </aside>
+  </section>
+
+  <section class="editorial-strip">
+    <div class="editorial-strip__main">
+      <p class="section-heading__eyebrow">Featured Writing</p>
+      <h2 class="section-heading__title">精选文章</h2>
+      <p class="section-heading__text">更适合第一次认识我时阅读的内容，通常会更能代表我最近在想什么、写什么。</p>
+    </div>
+    <a class="section-link" href="/archive">查看全部归档</a>
+  </section>
+
+  <div class="card-grid">
+    {featuredPosts.map((post) => <ArticleCard post={post} />)}
+  </div>
+
+  <section class="editorial-shell">
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">Selected Work</p>
+        <h2 class="section-heading__title">精选项目</h2>
+        <p class="section-heading__text">项目页强调问题背景、设计思路、实现取舍和我在其中承担的角色，而不是单纯罗列技术名词。</p>
+      </div>
+      <a class="section-link" href="/projects">浏览全部项目</a>
+    </div>
+
+    <div class="card-grid">
+      {featuredProjects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <section class="editorial-shell">
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">Recent Notes</p>
+        <h2 class="section-heading__title">最近更新</h2>
+        <p class="section-heading__text">保留一块最近文章区域，让首页同时具备作品入口和持续输出感。</p>
+      </div>
+      <a class="section-link" href="/blog">进入博客</a>
+    </div>
+
+    <div class="card-grid">
+      {latestPosts.map((post) => <ArticleCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="contact-banner">
+    <div>
+      <p class="section-heading__eyebrow">Get In Touch</p>
+      <h2 class="section-heading__title">如果这些内容让你想交流点什么。</h2>
+      <p class="section-heading__text">{homeSections.contactLead}</p>
+    </div>
+
+    <div class="hero__actions">
+      <a class="button button--primary" href={`mailto:${siteConfig.email}`}>发送邮件</a>
+      <a class="button button--secondary" href={siteConfig.github} target="_blank" rel="noreferrer">访问 GitHub</a>
+    </div>
+  </section>
+</BaseLayout>

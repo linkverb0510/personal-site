@@ -1,0 +1,102 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { isProductionVisible, sortByDateDesc } from '../../utils/content';
+import { formatDate } from '../../utils/format';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog')).filter((post) => isProductionVisible(post.data.draft));
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const allVisiblePosts = sortByDateDesc((await getCollection('blog')).filter((entry) => isProductionVisible(entry.data.draft)));
+const currentIndex = allVisiblePosts.findIndex((entry) => entry.id === post.id);
+const previousPost = currentIndex >= 0 ? allVisiblePosts[currentIndex + 1] : undefined;
+const nextPost = currentIndex > 0 ? allVisiblePosts[currentIndex - 1] : undefined;
+const relatedPosts = sortByDateDesc(
+  allVisiblePosts.filter(
+    (entry) =>
+      entry.id !== post.id &&
+      entry.data.tags.some((tag) => post.data.tags.includes(tag)),
+  ),
+).slice(0, 2);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} pageType="article">
+  <article>
+    <section class="article-hero">
+      <p class="detail-hero__eyebrow">Blog Post</p>
+      <h1 class="article-hero__title">{post.data.title}</h1>
+      <p class="article-hero__summary">{post.data.description}</p>
+
+      <div class="detail-meta" aria-label="文章元信息">
+        <span class="status-pill">{formatDate(post.data.date)}</span>
+        {post.data.updatedAt && <span class="status-pill">更新于 {formatDate(post.data.updatedAt)}</span>}
+        {post.data.tags.map((tag) => <span class="status-pill">{tag}</span>)}
+      </div>
+    </section>
+
+    <section class="article-body detail-body">
+      <Content />
+    </section>
+  </article>
+
+  {(previousPost || nextPost) && (
+    <section class="editorial-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-heading__eyebrow">Reading Flow</p>
+          <h2 class="section-heading__title">继续阅读</h2>
+        </div>
+      </div>
+      <div class="article-nav">
+        {previousPost && (
+          <a class="content-card article-nav__item" href={`/blog/${previousPost.id}/`}>
+            <span class="article-nav__label">上一篇</span>
+            <strong>{previousPost.data.title}</strong>
+          </a>
+        )}
+        {nextPost && (
+          <a class="content-card article-nav__item" href={`/blog/${nextPost.id}/`}>
+            <span class="article-nav__label">下一篇</span>
+            <strong>{nextPost.data.title}</strong>
+          </a>
+        )}
+      </div>
+    </section>
+  )}
+
+  {relatedPosts.length > 0 && (
+    <section class="editorial-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-heading__eyebrow">Keep Reading</p>
+          <h2 class="section-heading__title">继续阅读</h2>
+        </div>
+      </div>
+      <div class="card-grid">
+        {
+          relatedPosts.map((entry) => (
+            <article class="content-card">
+              <p class="content-card__eyebrow">{formatDate(entry.data.date)}</p>
+              <h3 class="content-card__title">
+                <a href={`/blog/${entry.id}/`}>{entry.data.title}</a>
+              </h3>
+              <p class="content-card__text">{entry.data.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  )}
+</BaseLayout>

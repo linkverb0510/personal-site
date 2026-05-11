@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../utils/format';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="content-card">
+  <p class="content-card__eyebrow">
+    <span>{formatDate(post.data.date)}</span>
+    {post.data.featured && <span class="status-pill">精选</span>}
+    {post.data.draft && <span class="status-pill">草稿</span>}
+  </p>
+  <h3 class="content-card__title">
+    <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+  </h3>
+  <p class="content-card__text">{post.data.description}</p>
+  <ul class="tag-list" aria-label="文章标签">
+    {post.data.tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+</article>

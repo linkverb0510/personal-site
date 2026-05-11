@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../utils/format';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="content-card">
+  <p class="content-card__eyebrow">
+    <span>{formatDate(project.data.date)}</span>
+    {project.data.featured && <span class="status-pill">精选项目</span>}
+  </p>
+  <h3 class="content-card__title">
+    <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+  </h3>
+  <p class="content-card__text">{project.data.summary}</p>
+  {project.data.role && <p class="content-card__meta">角色：{project.data.role}</p>}
+  <ul class="tag-list" aria-label="项目技术栈">
+    {project.data.techStack.map((item) => <li>{item}</li>)}
+  </ul>
+</article>

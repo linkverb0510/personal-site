@@ -1,0 +1,63 @@
+---
+import { aboutProfile, siteConfig } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于我" description="了解我的学习方向、工程原则和这座网站背后的思考。">
+  <section class="profile-hero">
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">About Me</p>
+        <h1 class="section-heading__title">关于我</h1>
+        <p class="section-heading__text">{aboutProfile.intro}</p>
+      </div>
+    </div>
+
+    <div class="profile-hero__grid">
+      <article class="profile-story">
+        <p>{aboutProfile.biography}</p>
+      </article>
+      <aside class="profile-links">
+        <p class="hero__eyebrow">Links</p>
+        <ul class="plain-list plain-list--stack">
+          {aboutProfile.links.map((link) => <li><a class="section-link" href={link.href} target={link.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{link.label}</a></li>)}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <section>
+    <div class="about-grid">
+      <article class="about-grid__panel stack-flow">
+        <h2>我现在在学什么</h2>
+        <ul>
+          {aboutProfile.learningFocus.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+
+      <article class="about-grid__panel stack-flow">
+        <h2>我如何看待工程</h2>
+        <ul>
+          {aboutProfile.principles.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+
+      <article class="about-grid__panel stack-flow">
+        <h2>能力地图</h2>
+        <ul>
+          {aboutProfile.skillMap.map((item) => <li><strong>{item.title}</strong>：{item.description}</li>)}
+        </ul>
+      </article>
+
+      <article class="about-grid__panel stack-flow">
+        <h2>联系我</h2>
+        <p>如果你想交流学习路径、项目思路或合作机会，可以通过下面方式联系我。</p>
+        <ul>
+          <li>Email: {siteConfig.email}</li>
+          <li>Location: {siteConfig.location}</li>
+          <li>GitHub: <a href={siteConfig.github} target="_blank" rel="noreferrer">linkverb0510</a></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

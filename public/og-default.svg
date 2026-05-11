@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Leestww 的精神家园</title>
+  <desc id="desc">个人博客与作品集默认分享图。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff6ea" />
+      <stop offset="55%" stop-color="#f7ecdf" />
+      <stop offset="100%" stop-color="#f4eadf" />
+    </linearGradient>
+    <radialGradient id="glowA" cx="0%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#c25a36" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#c25a36" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowB" cx="100%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#17392f" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#17392f" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glowA)" />
+  <rect width="1200" height="630" fill="url(#glowB)" />
+  <g fill="none" stroke="#17392f" stroke-opacity="0.12">
+    <path d="M80 110h1040" />
+    <path d="M80 520h1040" />
+  </g>
+  <g transform="translate(96 118)">
+    <rect x="0" y="0" width="72" height="72" rx="36" fill="#17392f" />
+    <text x="36" y="47" text-anchor="middle" font-size="34" font-family="'Space Grotesk', 'Segoe UI', sans-serif" fill="#fffaf4">L</text>
+    <text x="0" y="170" font-size="30" letter-spacing="6" font-family="'Space Grotesk', 'Segoe UI', sans-serif" fill="#c25a36">
+      PERSONAL WRITING · PROJECT CASES · LEARNING NOTES
+    </text>
+    <text x="0" y="286" font-size="88" font-weight="700" font-family="'Space Grotesk', 'Segoe UI', sans-serif" fill="#17392f">
+      Leestww 的精神家园
+    </text>
+    <text x="0" y="362" font-size="34" font-family="'Bitter', 'Georgia', serif" fill="#2b5649">
+      记录学习过程、项目实践与日常感想的个人博客
+    </text>
+    <g transform="translate(0 424)">
+      <rect width="246" height="58" rx="29" fill="#17392f" />
+      <text x="123" y="38" text-anchor="middle" font-size="28" font-family="'Space Grotesk', 'Segoe UI', sans-serif" fill="#fffaf4">
+        leestww06.cloud
+      </text>
+    </g>
+  </g>
+</svg>

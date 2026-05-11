@@ -160,3 +160,4 @@ PUBLIC_SITE_URL=https://leestww06.cloud
 - 访问 `https://www.leestww06.cloud` 会跳转到根域名。
 - `https://leestww06.cloud/rss.xml`、`/robots.txt`、`/sitemap-index.xml` 可访问。
 - 页面源码中的 `canonical` 与 `og:url` 使用根域名，而不是本地地址。
+- 默认分享图 `og-default.svg` 能正常访问。

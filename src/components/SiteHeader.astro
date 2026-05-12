@@ -1,5 +1,6 @@
 ---
 import { siteConfig } from '../data/site';
+import ThemeToggle from './ThemeToggle.astro';
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? currentPath === href : currentPath.startsWith(href));
@@ -24,6 +25,7 @@ const isActive = (href: string) => (href === '/' ? currentPath === href : curren
         }
       </ul>
     </nav>
+    <ThemeToggle />
   </div>
 </header>
 
@@ -34,8 +36,18 @@ const isActive = (href: string) => (href === '/' ? currentPath === href : curren
     z-index: 10;
     backdrop-filter: blur(18px);
     background:
-      linear-gradient(180deg, rgba(250, 246, 238, 0.92), rgba(250, 246, 238, 0.72));
-    border-bottom: 1px solid rgba(47, 79, 79, 0.12);
+      linear-gradient(180deg, rgba(248, 252, 255, 0.88), rgba(235, 247, 255, 0.7));
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 12px 28px rgba(96, 154, 198, 0.1);
+  }
+
+  :global(html[data-theme='night']) .site-header {
+    background:
+      linear-gradient(180deg, rgba(10, 10, 14, 0.94), rgba(16, 16, 23, 0.78));
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 16px 34px rgba(0, 0, 0, 0.32),
+      inset 0 -1px 0 rgba(229, 29, 43, 0.24);
   }
 
   .site-header__inner {
@@ -44,6 +56,7 @@ const isActive = (href: string) => (href === '/' ? currentPath === href : curren
     justify-content: space-between;
     gap: 1.25rem;
     min-height: 4.5rem;
+    padding-block: 0.7rem;
   }
 
   .brand {
@@ -64,9 +77,16 @@ const isActive = (href: string) => (href === '/' ? currentPath === href : curren
     width: 2.2rem;
     height: 2.2rem;
     border-radius: 999px;
-    color: var(--color-surface);
-    background: var(--color-ink);
-    box-shadow: 0 10px 24px rgba(34, 65, 53, 0.18);
+    color: #fff;
+    background:
+      linear-gradient(145deg, var(--color-accent-2), var(--color-accent));
+    box-shadow: 0 14px 26px rgba(77, 144, 199, 0.22);
+  }
+
+  :global(html[data-theme='night']) .brand__mark {
+    background:
+      linear-gradient(145deg, #ff7278, #e51d2b 58%, #7f0d18);
+    box-shadow: 0 16px 30px rgba(138, 9, 23, 0.34);
   }
 
   .nav-list {
@@ -83,33 +103,73 @@ const isActive = (href: string) => (href === '/' ? currentPath === href : curren
     align-items: center;
     min-height: 2.5rem;
     padding: 0 0.95rem;
-    border-radius: 999px;
+    border-radius: 999px 999px 999px 0.9rem;
     color: var(--color-muted);
     text-decoration: none;
+    border: 1px solid transparent;
     transition:
       transform 160ms ease,
       color 160ms ease,
-      background-color 160ms ease;
+      background-color 160ms ease,
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  :global(html[data-theme='night']) .nav-link {
+    border-color: rgba(255, 255, 255, 0.06);
+    border-radius: 0.65rem;
+    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 6% 50%);
   }
 
   .nav-link:hover,
   .nav-link:focus-visible {
     color: var(--color-ink);
-    background: rgba(47, 79, 79, 0.08);
+    background: rgba(237, 249, 255, 0.92);
+    border-color: rgba(116, 188, 239, 0.28);
+    box-shadow: 0 10px 20px rgba(102, 156, 198, 0.12);
     transform: translateY(-1px);
+  }
+
+  :global(html[data-theme='night']) .nav-link:hover,
+  :global(html[data-theme='night']) .nav-link:focus-visible {
+    color: var(--color-ink);
+    background:
+      linear-gradient(135deg, rgba(32, 10, 14, 0.98), rgba(91, 9, 19, 0.96));
+    border-color: rgba(255, 78, 89, 0.42);
+    box-shadow:
+      0 12px 24px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 78, 89, 0.12);
   }
 
   .nav-link--active {
     color: var(--color-ink);
-    background: rgba(206, 90, 54, 0.14);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(231, 247, 255, 0.92));
+    border-color: rgba(112, 179, 231, 0.28);
+    box-shadow: 0 12px 22px rgba(105, 155, 199, 0.14);
+  }
+
+  :global(html[data-theme='night']) .nav-link--active {
+    color: #fff7f1;
+    background:
+      linear-gradient(135deg, rgba(20, 6, 8, 0.98), rgba(229, 29, 43, 0.92) 74%, rgba(255, 122, 132, 0.9));
+    border-color: rgba(255, 110, 120, 0.52);
+    box-shadow:
+      0 16px 30px rgba(0, 0, 0, 0.34),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   }
 
   @media (max-width: 720px) {
     .site-header__inner {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       justify-content: center;
       padding-block: 0.9rem;
+    }
+
+    .nav-list {
+      width: 100%;
+      gap: 0.5rem;
     }
   }
 </style>

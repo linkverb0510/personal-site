@@ -35,6 +35,13 @@ const currentYear = new Date().getFullYear();
       linear-gradient(180deg, rgba(250, 246, 238, 0.4), rgba(250, 246, 238, 0.9));
   }
 
+  :global(html[data-theme='night']) .site-footer {
+    border-top-color: rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(circle at 18% 0%, rgba(229, 29, 43, 0.16), transparent 32%),
+      linear-gradient(180deg, rgba(13, 13, 18, 0.58), rgba(9, 9, 13, 0.96));
+  }
+
   .site-footer__inner {
     display: grid;
     gap: 1rem;
@@ -63,5 +70,10 @@ const currentYear = new Date().getFullYear();
   .site-footer__links a {
     color: var(--color-ink);
     text-decoration: none;
+  }
+
+  :global(html[data-theme='night']) .site-footer__links a:hover,
+  :global(html[data-theme='night']) .site-footer__links a:focus-visible {
+    color: var(--color-accent-2);
   }
 </style>

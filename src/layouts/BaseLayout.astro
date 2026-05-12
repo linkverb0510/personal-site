@@ -16,10 +16,18 @@ const { title, description, image, pageType } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={siteConfig.locale}>
+<html lang={siteConfig.locale} data-theme="day">
   <head>
     <SeoHead title={title} description={description} image={image} type={pageType} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>
+      (() => {
+        // Why: 主题要在首屏绘制前恢复，避免先闪白天再切黑夜的“闪屏感”。
+        const stored = localStorage.getItem('theme-preference');
+        const theme = stored === 'night' ? 'night' : 'day';
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳到主要内容</a>

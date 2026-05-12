@@ -1,38 +1,50 @@
 ---
 import { getCollection } from 'astro:content';
 import ArticleCard from '../../components/ArticleCard.astro';
+import { BLOG_CATEGORY_KEYS, getBlogCategoryMeta } from '../../data/content-taxonomy';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { isProductionVisible, sortByDateDesc } from '../../utils/content';
 
 const posts = sortByDateDesc((await getCollection('blog')).filter((post) => isProductionVisible(post.data.draft)));
-const featuredPosts = posts.filter((post) => post.data.featured);
+const sectionSummaries = BLOG_CATEGORY_KEYS.map((category) => {
+  const meta = getBlogCategoryMeta(category);
+  const categoryPosts = posts.filter((post) => post.data.category === category);
+
+  return {
+    ...meta,
+    count: categoryPosts.length,
+    latestTitle: categoryPosts[0]?.data.title ?? '等待第一篇文章',
+  };
+});
 ---
 
-<BaseLayout title="博客" description="阅读我的学习笔记、项目复盘和前端工程实践。">
+<BaseLayout title="写作总览" description="从生活感悟和学习笔记两个方向浏览我的写作内容。">
   <section class="list-page-intro">
     <div class="section-heading">
       <div>
-        <p class="section-heading__eyebrow">Blog Archive</p>
-        <h1 class="section-heading__title">博客</h1>
+        <p class="section-heading__eyebrow">Writing Overview</p>
+        <h1 class="section-heading__title">写作总览</h1>
         <p class="section-heading__text">
-          这里收集学习记录、项目拆解、前端实验和工程化思考。文章使用 Markdown 管理，方便持续输出。
+          文章依然保留统一归档，但表达内容现在明确分成两个方向：生活感悟负责记录人与阶段，学习笔记负责沉淀知识与方法。
         </p>
       </div>
     </div>
 
-    {featuredPosts.length > 0 && (
-      <>
-        <div class="section-heading">
-          <div>
-            <p class="section-heading__eyebrow">Featured Posts</p>
-            <h2 class="section-heading__title">精选文章</h2>
-          </div>
-        </div>
-        <div class="card-grid">
-          {featuredPosts.map((post) => <ArticleCard post={post} />)}
-        </div>
-      </>
-    )}
+    <div class="card-grid card-grid--thirds">
+      {
+        sectionSummaries.map((section) => (
+          <a class="content-card link-card" href={section.href}>
+            <p class="content-card__eyebrow">{section.eyebrow}</p>
+            <h2 class="content-card__title">{section.label}</h2>
+            <p class="content-card__text">{section.description}</p>
+            <div class="link-card__meta">
+              <span>{section.count} 篇文章</span>
+              <span>最近：{section.latestTitle}</span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
 
     <div class="section-heading">
       <div>

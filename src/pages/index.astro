@@ -1,106 +1,128 @@
 ---
 import { getCollection } from 'astro:content';
-import ArticleCard from '../components/ArticleCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { homeSections, siteConfig } from '../data/site';
+import RecentUpdateCard from '../components/RecentUpdateCard.astro';
+import { blogCategoryMeta, primarySections, projectSectionMeta } from '../data/content-taxonomy';
+import { homeSections } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { isProductionVisible, sortByDateDesc } from '../utils/content';
 
 const allPosts = sortByDateDesc((await getCollection('blog')).filter((post) => isProductionVisible(post.data.draft)));
-const featuredPosts = allPosts.filter((post) => post.data.featured).slice(0, 2);
-const latestPosts = allPosts.slice(0, 3);
-const featuredProjects = sortByDateDesc((await getCollection('projects')).filter((project) => project.data.featured)).slice(
-  0,
-  2,
-);
+const allProjects = sortByDateDesc(await getCollection('projects'));
+
+const lifePosts = allPosts.filter((post) => post.data.category === 'life');
+const studyPosts = allPosts.filter((post) => post.data.category === 'study');
+
+const sectionEntrances = primarySections.map((section) => {
+  if (section.key === 'life') {
+    return {
+      ...section,
+      count: lifePosts.length,
+      latestTitle: lifePosts[0]?.data.title ?? '等待第一篇文章',
+    };
+  }
+
+  if (section.key === 'study') {
+    return {
+      ...section,
+      count: studyPosts.length,
+      latestTitle: studyPosts[0]?.data.title ?? '等待第一篇文章',
+    };
+  }
+
+  return {
+    ...section,
+    count: allProjects.length,
+    latestTitle: allProjects[0]?.data.title ?? '等待第一个项目',
+  };
+});
+
+const recentUpdates = [
+  ...allPosts.map((post) => ({
+    title: post.data.title,
+    description: post.data.description,
+    href: `/blog/${post.id}/`,
+    date: post.data.updatedAt ?? post.data.date,
+    label: blogCategoryMeta[post.data.category].label,
+    metaItems: post.data.tags.slice(0, 3),
+  })),
+  ...allProjects.map((project) => ({
+    title: project.data.title,
+    description: project.data.summary,
+    href: `/projects/${project.id}/`,
+    date: project.data.date,
+    label: projectSectionMeta.label,
+    metaItems: project.data.techStack.slice(0, 3),
+  })),
+]
+  .sort((left, right) => right.date.valueOf() - left.date.valueOf())
+  .slice(0, 4);
 ---
 
 <BaseLayout title="首页" description={homeSections.heroText}>
-  <section class="landing-hero">
-    <div class="landing-hero__copy">
+  <section class="landing-hero landing-hero--single">
+    <div class="landing-hero__copy landing-hero__copy--wide">
+      <span class="hero__scene-number" aria-hidden="true">03</span>
+      <span class="hero__glyph hero__glyph--left" aria-hidden="true">LIFE</span>
+      <span class="hero__glyph hero__glyph--right" aria-hidden="true">NOTE</span>
+      <div class="hero__blade hero__blade--cyan" aria-hidden="true"></div>
+      <div class="hero__blade hero__blade--white" aria-hidden="true"></div>
+      <div class="hero__circle" aria-hidden="true"></div>
       <p class="hero__eyebrow">{homeSections.heroEyebrow}</p>
+      <p class="hero__slashed-label">
+        <span class="hero__theme-label hero__theme-label--day">Day Mode / Blue Hour</span>
+        <span class="hero__theme-label hero__theme-label--night">Night Mode / Velvet Raid</span>
+      </p>
       <h1 class="landing-hero__title">{homeSections.heroTitle}</h1>
       <p class="landing-hero__text">{homeSections.heroText}</p>
       <p class="landing-hero__caption">{homeSections.heroCaption}</p>
+      <p class="landing-hero__note">{homeSections.heroNote}</p>
 
       <div class="hero__actions">
-        <a class="button button--primary" href="/projects">查看项目</a>
-        <a class="button button--secondary" href="/blog">阅读博客</a>
+        <a class="button button--primary" href="#recent-updates">最近更新</a>
+        <a class="button button--secondary" href="/about">关于我</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="editorial-shell">
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">Section Guide</p>
+        <h2 class="section-heading__title">从这里进入三个板块</h2>
+        <p class="section-heading__text">{homeSections.sectionLead}</p>
       </div>
     </div>
 
-    <aside class="landing-hero__panel">
-      <p class="hero__eyebrow">Current Focus</p>
-      <ul class="plain-list plain-list--stack">
-        {homeSections.currentFocus.map((item) => <li class="status-pill status-pill--block">{item}</li>)}
-      </ul>
-
-      <div class="stats-grid stats-grid--compact" aria-label="网站特点">
-        {
-          homeSections.stats.map((stat) => (
-            <div class="stat-tile">
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
+    <div class="card-grid card-grid--thirds">
+      {
+        sectionEntrances.map((section, index) => (
+          <a class:list={['content-card', 'link-card', 'link-card--heroic', `link-card--${section.key}`]} href={section.href}>
+            <span class="link-card__index" aria-hidden="true">{`0${index + 1}`}</span>
+            <p class="content-card__eyebrow">{section.eyebrow}</p>
+            <h3 class="content-card__title">{section.label}</h3>
+            <p class="content-card__text">{section.description}</p>
+            <div class="link-card__meta">
+              <span>{section.count} 篇内容</span>
+              <span>最近：{section.latestTitle}</span>
             </div>
-          ))
-        }
-      </div>
-    </aside>
-  </section>
-
-  <section class="editorial-strip">
-    <div class="editorial-strip__main">
-      <p class="section-heading__eyebrow">Featured Writing</p>
-      <h2 class="section-heading__title">精选文章</h2>
-      <p class="section-heading__text">更适合第一次认识我时阅读的内容，通常会更能代表我最近在想什么、写什么。</p>
+          </a>
+        ))
+      }
     </div>
-    <a class="section-link" href="/archive">查看全部归档</a>
   </section>
 
-  <div class="card-grid">
-    {featuredPosts.map((post) => <ArticleCard post={post} />)}
-  </div>
-
-  <section class="editorial-shell">
+  <section id="recent-updates" class="editorial-shell">
     <div class="section-heading">
       <div>
-        <p class="section-heading__eyebrow">Selected Work</p>
-        <h2 class="section-heading__title">精选项目</h2>
-        <p class="section-heading__text">项目页强调问题背景、设计思路、实现取舍和我在其中承担的角色，而不是单纯罗列技术名词。</p>
-      </div>
-      <a class="section-link" href="/projects">浏览全部项目</a>
-    </div>
-
-    <div class="card-grid">
-      {featuredProjects.map((project) => <ProjectCard project={project} />)}
-    </div>
-  </section>
-
-  <section class="editorial-shell">
-    <div class="section-heading">
-      <div>
-        <p class="section-heading__eyebrow">Recent Notes</p>
+        <p class="section-heading__eyebrow">Recent Updates</p>
         <h2 class="section-heading__title">最近更新</h2>
-        <p class="section-heading__text">保留一块最近文章区域，让首页同时具备作品入口和持续输出感。</p>
+        <p class="section-heading__text">{homeSections.recentLead}</p>
       </div>
-      <a class="section-link" href="/blog">进入博客</a>
+      <a class="section-link" href="/archive">按年份查看文章归档</a>
     </div>
 
     <div class="card-grid">
-      {latestPosts.map((post) => <ArticleCard post={post} />)}
-    </div>
-  </section>
-
-  <section class="contact-banner">
-    <div>
-      <p class="section-heading__eyebrow">Get In Touch</p>
-      <h2 class="section-heading__title">如果这些内容让你想交流点什么。</h2>
-      <p class="section-heading__text">{homeSections.contactLead}</p>
-    </div>
-
-    <div class="hero__actions">
-      <a class="button button--primary" href={`mailto:${siteConfig.email}`}>发送邮件</a>
-      <a class="button button--secondary" href={siteConfig.github} target="_blank" rel="noreferrer">访问 GitHub</a>
+      {recentUpdates.map((entry) => <RecentUpdateCard update={entry} />)}
     </div>
   </section>
 </BaseLayout>

@@ -2,6 +2,7 @@
 title: 欢迎来到我的数字花园
 description: 为什么我要做一个同时承载博客与作品集的个人网站，以及第一版会聚焦什么。
 date: 2026-05-11
+category: study
 featured: true
 tags:
   - 建站

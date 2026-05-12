@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getBlogCategoryMeta } from '../data/content-taxonomy';
 import { formatDate } from '../utils/format';
 
 interface Props {
@@ -7,11 +8,13 @@ interface Props {
 }
 
 const { post } = Astro.props;
+const categoryMeta = getBlogCategoryMeta(post.data.category);
 ---
 
 <article class="content-card">
   <p class="content-card__eyebrow">
     <span>{formatDate(post.data.date)}</span>
+    <span class="status-pill">{categoryMeta.label}</span>
     {post.data.featured && <span class="status-pill">精选</span>}
     {post.data.draft && <span class="status-pill">草稿</span>}
   </p>

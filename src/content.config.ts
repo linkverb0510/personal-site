@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { BLOG_CATEGORY_KEYS } from './data/content-taxonomy';
 
 // Why: schema 像内容层的“类型合同”，它能在你写 Markdown 时提前发现字段遗漏。
 const blogCollection = defineCollection({
@@ -9,6 +10,8 @@ const blogCollection = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    // Why: 文章要落到清晰栏目里，显式分类比事后从标签里猜更稳定。
+    category: z.enum(BLOG_CATEGORY_KEYS),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),

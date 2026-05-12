@@ -2,6 +2,7 @@
 title: 十五又五
 description: 二十岁生日的一些感想
 date: 2026-05-10
+category: life
 featured: true
 updatedAt: 2026-05-11
 tags:

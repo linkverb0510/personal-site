@@ -1,9 +1,10 @@
 import { DEFAULT_SITE_URL } from '../../site.constants.js';
+import { blogCategoryMeta, projectSectionMeta } from './content-taxonomy';
 
 export const siteConfig = {
   title: 'Leestww 的精神家园',
   shortTitle: 'Leestww',
-  description: '记录学习过程、项目实践、日常感悟的个人博客。',
+  description: '记录生活感悟、学习笔记与个人项目的个人网站。',
   author: 'Leestww',
   locale: 'zh-CN',
   email: 'RicardoLee@buaa.edu.cn',
@@ -12,9 +13,9 @@ export const siteConfig = {
   siteUrl: process.env.PUBLIC_SITE_URL ?? DEFAULT_SITE_URL,
   navigation: [
     { href: '/', label: '首页' },
-    { href: '/blog', label: '博客' },
-    { href: '/projects', label: '项目' },
-    { href: '/archive', label: '归档' },
+    { href: blogCategoryMeta.life.href, label: blogCategoryMeta.life.label },
+    { href: blogCategoryMeta.study.href, label: blogCategoryMeta.study.label },
+    { href: projectSectionMeta.href, label: projectSectionMeta.label },
     { href: '/about', label: '关于我' },
   ],
   socialLinks: [
@@ -24,29 +25,18 @@ export const siteConfig = {
 } as const;
 
 export const homeSections = {
-  heroEyebrow: 'Personal Writing · Project Cases · Learning Notes',
+  heroEyebrow: 'Life Reflections · Learning Notes · Personal Projects',
   heroTitle: '有一分光，发一分热。',
   heroText:
-    '欢迎来到Leestww的精神家园，坐下来喝杯茶再走吧',
+    '这里是我的长期个人网站，用来记录生活感悟、整理学习笔记，也沉淀我真正做过的个人项目。',
   heroCaption:
-    '软件项目 / 作品分享 / 人生感悟 / 学习笔记',
-  values: [
-    '内容先行：文章和项目都由 Markdown 驱动，新增内容不需要改页面逻辑。',
-    '表达克制：尽量用清晰结构，而不是炫技式交互，去支撑内容阅读。',
-    '工程可持续：从第一天就保持 TypeScript、Lint、Format、CI 与可验证构建。',
-  ],
-  stats: [
-    { value: 'Astro', label: '静态站框架' },
-    { value: 'Markdown', label: '内容来源' },
-    { value: 'SSG', label: '生成方式' },
-  ],
-  currentFocus: [
-    '大模型基础：LLM 原理、微调方法、应用开发',
-    '写作表达：把“正在学习什么”转化为能被阅读和复盘的文字',
-    '工程思维：让个人项目也保持结构清晰、便于长期维护',
-  ],
-  contactLead:
-    '如果你也在做个人网站、记录学习与生活，欢迎通过邮件或 GitHub 与我交流。',
+    '首页只保留最必要的介绍，具体内容分别归入生活感悟、学习笔记和个人项目。',
+  heroNote:
+    '我希望它像一间持续整理中的书房：入口简洁，但每个房间都有明确主题，也能看见最近的变化。',
+  sectionLead:
+    '三个板块承担三种不同任务：生活负责表达，学习负责沉淀，项目负责证明。',
+  recentLead:
+    '首页只保留最近更新，让访客先感受到这个网站是持续生长的，而不是一次性摆好的展板。',
 } as const;
 
 export const aboutProfile = {

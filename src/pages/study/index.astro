@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getBlogCategoryMeta } from '../../data/content-taxonomy';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { isProductionVisible, sortByDateDesc } from '../../utils/content';
+
+const category = 'study' as const;
+const meta = getBlogCategoryMeta(category);
+const posts = sortByDateDesc(
+  (await getCollection('blog')).filter((post) => isProductionVisible(post.data.draft) && post.data.category === category),
+);
+---
+
+<BaseLayout title={meta.label} description={meta.description}>
+  <section class="list-page-intro">
+    <div class="section-heading">
+      <div>
+        <p class="section-heading__eyebrow">{meta.eyebrow}</p>
+        <h1 class="section-heading__title">{meta.label}</h1>
+        <p class="section-heading__text">
+          这里收纳我在学习过程中的理解、拆解与复盘，重点不是“知道了什么”，而是“我是怎么想明白的”。
+        </p>
+      </div>
+      <a class="section-link" href="/blog">返回写作总览</a>
+    </div>
+
+    <div class="card-grid">
+      {posts.map((post) => <ArticleCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

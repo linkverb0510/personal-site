@@ -1,0 +1,32 @@
+---
+import { formatDate } from '../utils/format';
+
+interface Props {
+  update: {
+    title: string;
+    description: string;
+    href: string;
+    date: Date;
+    label: string;
+    metaItems: string[];
+  };
+}
+
+const { update } = Astro.props;
+---
+
+<article class="content-card">
+  <p class="content-card__eyebrow">
+    <span>{formatDate(update.date)}</span>
+    <span class="status-pill">{update.label}</span>
+  </p>
+  <h3 class="content-card__title">
+    <a href={update.href}>{update.title}</a>
+  </h3>
+  <p class="content-card__text">{update.description}</p>
+  {update.metaItems.length > 0 && (
+    <ul class="tag-list" aria-label="条目补充信息">
+      {update.metaItems.map((item) => <li>{item}</li>)}
+    </ul>
+  )}
+</article>

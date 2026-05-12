@@ -1,0 +1,113 @@
+<button
+  class="theme-toggle"
+  type="button"
+  aria-label="切换到黑夜模式"
+  aria-pressed="false"
+  data-theme-toggle
+>
+  <span class="theme-toggle__track" aria-hidden="true">
+    <span class="theme-toggle__thumb"></span>
+  </span>
+  <span class="theme-toggle__label" data-theme-toggle-label>白天模式</span>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector('[data-theme-toggle]');
+  const label = document.querySelector('[data-theme-toggle-label]');
+
+  if (toggle instanceof HTMLButtonElement && label instanceof HTMLElement) {
+    // Why: 按钮文案和可访问性状态要跟当前主题始终一致，避免“视觉切了、语义没切”。
+    const sync = (theme: 'day' | 'night') => {
+      const isNight = theme === 'night';
+      toggle.setAttribute('aria-pressed', String(isNight));
+      toggle.setAttribute('aria-label', isNight ? '切换到白天模式' : '切换到黑夜模式');
+      label.textContent = isNight ? '黑夜模式' : '白天模式';
+    };
+
+    sync(root.dataset.theme === 'night' ? 'night' : 'day');
+
+    toggle.addEventListener('click', () => {
+      const nextTheme = root.dataset.theme === 'night' ? 'day' : 'night';
+      root.dataset.theme = nextTheme;
+      localStorage.setItem('theme-preference', nextTheme);
+      sync(nextTheme);
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.6rem;
+    padding: 0.35rem 0.45rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-surface-strong);
+    color: var(--color-ink);
+    font: inherit;
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 24px rgba(53, 111, 166, 0.12);
+  }
+
+  .theme-toggle__track {
+    position: relative;
+    width: 3.15rem;
+    height: 1.65rem;
+    border-radius: 999px;
+    background:
+      linear-gradient(90deg, rgba(141, 214, 255, 0.96), rgba(71, 146, 255, 0.96));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  }
+
+  .theme-toggle__thumb {
+    position: absolute;
+    top: 0.17rem;
+    left: 0.18rem;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow:
+      0 8px 16px rgba(31, 76, 118, 0.18),
+      inset 0 0 0 1px rgba(31, 76, 118, 0.08);
+    transition: transform 220ms ease;
+  }
+
+  :global(html[data-theme='night']) .theme-toggle__track {
+    background:
+      linear-gradient(90deg, rgba(61, 25, 33, 0.96), rgba(229, 29, 43, 0.96));
+  }
+
+  :global(html[data-theme='night']) .theme-toggle__thumb {
+    transform: translateX(1.48rem);
+    background: #f4f0ea;
+  }
+
+  .theme-toggle__label {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 720px) {
+    .theme-toggle {
+      align-self: stretch;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+</style>

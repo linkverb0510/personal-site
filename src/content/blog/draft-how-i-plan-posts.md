@@ -2,6 +2,7 @@
 title: 我如何规划一篇技术文章
 description: 这是一篇草稿文章，用来验证生产环境不会把未完成内容发布出去。
 date: 2026-05-12
+category: study
 featured: false
 tags:
   - 写作
